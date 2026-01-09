@@ -218,10 +218,6 @@ where
 
 impl<Params, Resp, Output, Map> From<Pin<Box<dyn Future<Output = TransportResult<Output>> + Send>>>
     for ProviderCall<Params, Resp, Output, Map>
-where
-    Params: RpcSend,
-    Resp: RpcRecv,
-    Map: Fn(Resp) -> Output,
 {
     fn from(fut: Pin<Box<dyn Future<Output = TransportResult<Output>> + Send>>) -> Self {
         Self::BoxedFuture(fut)
@@ -230,9 +226,6 @@ where
 
 impl<Params, Resp> From<oneshot::Receiver<TransportResult<Box<RawValue>>>>
     for ProviderCall<Params, Resp>
-where
-    Params: RpcSend,
-    Resp: RpcRecv,
 {
     fn from(rx: oneshot::Receiver<TransportResult<Box<RawValue>>>) -> Self {
         Waiter::from(rx).into()
